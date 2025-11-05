@@ -1,0 +1,163 @@
+/* style.css - Fresadora PRO 2.1 Web Edition */
+:root{
+  --sidebar-bg:#2C3E50;
+  --btn-bg:#2E5C9A;
+  --main-bg:#F7F9FB;
+  --panel-bg:#ECF0F1;
+  --accent:#1A75C0;
+  --text:#242424;
+  --muted:#666;
+  --input-h:34px;
+  --gap:8px;
+  font-family: "Segoe UI", Roboto, Arial, sans-serif;
+}
+
+*{box-sizing:border-box}
+body{margin:0;background:var(--main-bg);color:var(--text);font-size:13px}
+#app{display:flex;min-height:100vh}
+
+/* Sidebar */
+#sidebar{
+  width:160px;background:var(--sidebar-bg);padding:18px 12px;display:flex;flex-direction:column;gap:8px;
+}
+.side-btn{
+  background:var(--btn-bg);color:white;border:0;padding:10px;border-radius:4px;cursor:pointer;font-weight:700;
+  box-shadow: none;
+}
+.side-btn:hover{background:var(--accent)}
+
+/* Main content */
+#main{flex:1;padding:14px 18px}
+h1{margin:6px 0 2px;font-size:18px}
+.subtitle{margin:0 0 12px;color:var(--muted);font-size:12px}
+
+/* Form area layout */
+#form-area{background:transparent;padding:6px 0 12px}
+.grid-row{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:var(--gap);margin-bottom:6px;
+}
+label{display:flex;flex-direction:column;font-size:12px}
+label input, label select{
+  height:var(--input-h);padding:6px 8px;border:1px solid #cfcfcf;border-radius:3px;background:white;
+  font-size:13px;
+}
+label input[readonly]{background:#fafafa}
+
+/* Table */
+#table-area{background:var(--panel-bg);padding:8px;border-radius:4px;border:1px solid #e0e0e0}
+table{width:100%;border-collapse:collapse;font-size:12px}
+thead th{
+  background:#d7d0c7;color:#222;padding:6px;border:1px solid #d0c7bd;text-align:center;font-weight:700;
+}
+tbody td{padding:6px;border:1px solid #e8e8e8;text-align:center;background:white}
+tbody tr.selected{background:#e8f4ff}
+
+/* Responsive tweak */
+@media (max-width:980px){
+  .grid-row{grid-template-columns:repeat(2,1fr)}
+}
+/* ====== ESTILO GENERAL ====== */
+body {
+    font-family: "Segoe UI", Arial, sans-serif;
+    background-color: #f8f9fb;
+    margin: 0;
+    padding: 0;
+}
+
+/* ====== PANEL LATERAL ====== */
+.sidebar {
+    background-color: #273043;
+    color: white;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 230px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+}
+
+.sidebar button {
+    background-color: #394867;
+    border: none;
+    color: white;
+    padding: 10px;
+    margin: 6px 0;
+    text-align: left;
+    font-size: 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.sidebar button:hover {
+    background-color: #4a5d7a;
+}
+
+/* ====== CONTENIDO PRINCIPAL ====== */
+.main {
+    margin-left: 250px;
+    padding: 20px;
+}
+
+h1 {
+    margin-top: 0;
+    font-size: 22px;
+    color: #1e2a3a;
+}
+
+h3 {
+    color: #4a5d7a;
+    font-weight: 400;
+}
+
+/* ====== FORMULARIO ====== */
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 10px;
+    background-color: white;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+    margin-bottom: 20px;
+}
+
+label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #333;
+}
+
+input, select {
+    width: 100%;
+    padding: 6px 8px;
+    font-size: 13px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+}
+
+/* ====== TABLA ====== */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: white;
+    font-size: 13px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+}
+
+th, td {
+    border: 1px solid #ddd;
+    text-align: center;
+    padding: 8px;
+}
+
+th {
+    background-color: #e5e9f0;
+    font-weight: bold;
+}
+
+tr:nth-child(even) {
+    background-color: #f8f9fb;
+}

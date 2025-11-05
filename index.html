@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Hoja de Ruta – Fresadora PRO 2.1 (Web)</title>
+  <link rel="stylesheet" href="style.css" />
+  <!-- SheetJS (para export/import xlsx) -->
+  <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
+</head>
+<body>
+  <div id="app">
+    <aside id="sidebar">
+      <button id="btnAgregar" class="side-btn">➕ Agregar</button>
+      <button id="btnEliminar" class="side-btn">🗑️ Eliminar</button>
+      <button id="btnLimpiar" class="side-btn">🧹 Limpiar</button>
+      <button id="btnGuardar" class="side-btn">💾 Guardar Excel</button>
+      <input id="inputCargar" type="file" accept=".xlsx,.xls" style="display:none" />
+      <button id="btnCargar" class="side-btn">📂 Cargar Excel</button>
+    </aside>
+
+    <main id="main">
+      <header>
+        <h1>Hoja de Ruta – Fresadora PRO 2.1</h1>
+        <p class="subtitle">Cálculo automático de parámetros de mecanizado</p>
+      </header>
+
+      <section id="form-area">
+        <div class="grid-row">
+          <label>Fase<input id="fase" type="text" /></label>
+          <label>Subfase<input id="subfase" type="text" /></label>
+          <label>Operación
+            <select id="operacion">
+              <option>Taladrado</option>
+              <option>Avellanado</option>
+              <option>Abocardado</option>
+              <option>Ranurado</option>
+            </select>
+          </label>
+          <label>Material
+            <select id="material"></select>
+          </label>
+        </div>
+
+        <div class="grid-row">
+          <label>Herramienta<input id="herramienta" type="text" /></label>
+          <label>Ø herramienta (mm)<input id="D" type="number" step="0.001" /></label>
+          <label>z (dientes)<input id="z" type="number" step="1" /></label>
+          <label>f_z (mm/diente)<input id="fz" type="number" step="0.0001" /></label>
+        </div>
+
+        <div class="grid-row">
+          <label>Vc (m/min)<input id="Vc" type="number" step="0.01" /></label>
+          <label>a_p (mm)<input id="ap" type="number" step="0.001" /></label>
+          <label>a_e (mm)<input id="ae" type="number" step="0.001" /></label>
+          <label>RPM (calc.)<input id="rpm" type="text" readonly /></label>
+        </div>
+
+        <div class="grid-row">
+          <label>Vf (mm/min)<input id="vf" type="text" readonly /></label>
+          <label>MRR (mm³/min)<input id="mrr" type="text" readonly /></label>
+          <label>Potencia (kW)<input id="pkw" type="text" readonly /></label>
+          <label>Torque (N·m)<input id="torque" type="text" readonly /></label>
+        </div>
+
+        <div class="grid-row">
+          <label>Fuerza corte (N)<input id="fc" type="text" readonly /></label>
+          <label>Longitud L (mm)<input id="L" type="number" step="0.01" /></label>
+          <label>T. Mecanizado (min)<input id="tme" type="text" readonly /></label>
+          <label>Pasadas<input id="pasadas" type="number" step="1" /></label>
+        </div>
+
+        <div class="grid-row">
+          <label>Útiles<input id="utiles" type="text" /></label>
+          <label>Refrigeración<input id="refrigeracion" type="text" /></label>
+          <label>Notas<input id="notas" type="text" /></label>
+          <div></div>
+        </div>
+      </section>
+
+      <section id="table-area">
+        <table id="tbl">
+          <thead>
+            <tr>
+              <th>Fase</th><th>Subfase</th><th>Operación</th><th>Material</th><th>Herramienta</th><th>Ø (mm)</th>
+              <th>a_p (mm)</th><th>a_e (mm)</th><th>z</th><th>f_z (mm/diente)</th><th>Vc (m/min)</th>
+              <th>RPM</th><th>Vf (mm/min)</th><th>MRR (mm3/min)</th><th>P (kW)</th><th>Torque (N·m)</th>
+              <th>F_c (N)</th><th>L (mm)</th><th>T. Mecanizado (min)</th><th>Pasadas</th><th>Útiles</th><th>Refrigeración</th><th>Notas</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </section>
+    </main>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
