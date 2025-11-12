@@ -178,78 +178,78 @@ function limpiarTabla(){
     tblBody.innerHTML = "";
   }
 }
-
 async function exportExcel() {
-  // Asegurarse de que XLSX esté disponible
-  if (typeof XLSX === 'undefined') {
-    alert("Error: no se encontró la librería XLSX.js");
+  // Asegurar que ExcelJS está disponible
+  if (typeof ExcelJS === "undefined") {
+    alert("Error: no se encontró la librería ExcelJS");
     return;
   }
 
-  // Obtener datos de la tabla
-  const ws_data = [];
-  const headers = Array.from(document.querySelectorAll("#tbl thead th")).map(th => th.textContent.trim());
-  ws_data.push(headers);
+  const workbook = new ExcelJS.Workbook();
+  const worksheet = workbook.addWorksheet("Hoja de Ruta");
 
+  // Obtener encabezados de la tabla
+  const headers = Array.from(document.querySelectorAll("#tbl thead th")).map(th => th.textContent.trim());
+  worksheet.addRow(headers);
+
+  // Agregar filas de datos
   document.querySelectorAll("#tbl tbody tr").forEach(tr => {
     const row = Array.from(tr.children).map(td => td.textContent.trim());
-    ws_data.push(row);
+    worksheet.addRow(row);
   });
-
-  // Crear libro y hoja
-  const wb = XLSX.utils.book_new();
-  const ws = XLSX.utils.aoa_to_sheet(ws_data);
 
   // === ESTILOS ===
-  const headerStyle = {
-    font: { bold: true, color: { rgb: "000000" } },
-    fill: { fgColor: { rgb: "F4A460" } }, // naranja exacto
-    alignment: { horizontal: "center", vertical: "center", wrapText: true },
-    border: {
-      top: { style: "thin", color: { rgb: "000000" } },
-      bottom: { style: "thin", color: { rgb: "000000" } },
-      left: { style: "thin", color: { rgb: "000000" } },
-      right: { style: "thin", color: { rgb: "000000" } }
-    }
+  const headerFill = {
+    type: "pattern",
+    pattern: "solid",
+    fgColor: { argb: "F4A460" } // Naranja similar al de tu imagen
+  };
+  const headerBorder = {
+    top: { style: "thin", color: { argb: "000000" } },
+    bottom: { style: "thin", color: { argb: "000000" } },
+    left: { style: "thin", color: { argb: "000000" } },
+    right: { style: "thin", color: { argb: "000000" } }
   };
 
-  const cellStyle = {
-    alignment: { horizontal: "center", vertical: "center", wrapText: true },
-    border: {
-      top: { style: "thin", color: { rgb: "808080" } },
-      bottom: { style: "thin", color: { rgb: "808080" } },
-      left: { style: "thin", color: { rgb: "808080" } },
-      right: { style: "thin", color: { rgb: "808080" } }
-    }
-  };
-
-  // Aplicar estilos a todas las celdas
-  const range = XLSX.utils.decode_range(ws['!ref']);
-  for (let R = range.s.r; R <= range.e.r; ++R) {
-    for (let C = range.s.c; C <= range.e.c; ++C) {
-      const cell_address = XLSX.utils.encode_cell({ r: R, c: C });
-      if (!ws[cell_address]) continue;
-      ws[cell_address].s = (R === 0) ? headerStyle : cellStyle;
-    }
-  }
-
-  // Ajustar ancho automático de columnas
-  const colWidths = headers.map((h, i) => {
-    let maxLen = h.length;
-    for (let R = 1; R < ws_data.length; R++) {
-      const val = ws_data[R][i] ? ws_data[R][i].toString() : "";
-      maxLen = Math.max(maxLen, val.length);
-    }
-    return { wch: Math.min(maxLen + 2, 40) };
+  // Aplicar estilo al encabezado
+  const headerRow = worksheet.getRow(1);
+  headerRow.eachCell((cell) => {
+    cell.fill = headerFill;
+    cell.font = { bold: true, color: { argb: "000000" } };
+    cell.alignment = { horizontal: "center", vertical: "middle", wrapText: true };
+    cell.border = headerBorder;
   });
-  ws['!cols'] = colWidths;
 
-  // Agregar hoja al libro
-  XLSX.utils.book_append_sheet(wb, ws, "Hoja de Ruta");
+  // Bordes y centrado a las demás filas
+  worksheet.eachRow((row, rowNumber) => {
+    if (rowNumber === 1) return; // saltar encabezado
+    row.eachCell(cell => {
+      cell.alignment = { horizontal: "center", vertical: "middle" };
+      cell.border = {
+        top: { style: "thin", color: { argb: "808080" } },
+        bottom: { style: "thin", color: { argb: "808080" } },
+        left: { style: "thin", color: { argb: "808080" } },
+        right: { style: "thin", color: { argb: "808080" } }
+      };
+    });
+  });
 
-  // Descargar Excel
-  XLSX.writeFile(wb, "Hoja_de_Ruta_Fresadora.xlsx");
+  // Ajustar ancho de columnas automáticamente
+  worksheet.columns.forEach(column => {
+    let maxLength = 10;
+    column.eachCell({ includeEmpty: true }, (cell) => {
+      const len = cell.value ? cell.value.toString().length : 0;
+      if (len > maxLength) maxLength = len;
+    });
+    column.width = maxLength + 2;
+  });
+
+  // Descargar el archivo Excel
+  const buffer = await workbook.xlsx.writeBuffer();
+  saveAs(new Blob([buffer]), "Hoja_de_Ruta_Fresadora.xlsx");
 }
+
+
 // ----- Cargar XLSX (SheetJS) -----
 function cargarExcel(file){
   const reader = new FileReader();
@@ -333,4 +333,5 @@ document.addEventListener("DOMContentLoaded", ()=>{
   // initial recalc
   recalcularPreview();
 });
+
 
