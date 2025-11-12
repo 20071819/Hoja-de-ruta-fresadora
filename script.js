@@ -179,25 +179,77 @@ function limpiarTabla(){
   }
 }
 
-// ----- Exportar XLSX (SheetJS) -----
-function exportExcel(){
-  // collect table data
+async function exportExcel() {
+  // Asegurarse de que XLSX esté disponible
+  if (typeof XLSX === 'undefined') {
+    alert("Error: no se encontró la librería XLSX.js");
+    return;
+  }
+
+  // Obtener datos de la tabla
   const ws_data = [];
-  // header
-  const headers = Array.from(document.querySelectorAll("#tbl thead th")).map(th => th.textContent);
+  const headers = Array.from(document.querySelectorAll("#tbl thead th")).map(th => th.textContent.trim());
   ws_data.push(headers);
-  // rows
+
   document.querySelectorAll("#tbl tbody tr").forEach(tr => {
-    const row = Array.from(tr.children).map(td => td.textContent);
+    const row = Array.from(tr.children).map(td => td.textContent.trim());
     ws_data.push(row);
   });
 
+  // Crear libro y hoja
   const wb = XLSX.utils.book_new();
   const ws = XLSX.utils.aoa_to_sheet(ws_data);
-  XLSX.utils.book_append_sheet(wb, ws, "HojaRuta");
-  XLSX.writeFile(wb, "HojaRuta_FresadoraPRO2_1.xlsx");
-}
 
+  // === ESTILOS ===
+  const headerStyle = {
+    font: { bold: true, color: { rgb: "000000" } },
+    fill: { fgColor: { rgb: "F4A460" } }, // naranja exacto
+    alignment: { horizontal: "center", vertical: "center", wrapText: true },
+    border: {
+      top: { style: "thin", color: { rgb: "000000" } },
+      bottom: { style: "thin", color: { rgb: "000000" } },
+      left: { style: "thin", color: { rgb: "000000" } },
+      right: { style: "thin", color: { rgb: "000000" } }
+    }
+  };
+
+  const cellStyle = {
+    alignment: { horizontal: "center", vertical: "center", wrapText: true },
+    border: {
+      top: { style: "thin", color: { rgb: "808080" } },
+      bottom: { style: "thin", color: { rgb: "808080" } },
+      left: { style: "thin", color: { rgb: "808080" } },
+      right: { style: "thin", color: { rgb: "808080" } }
+    }
+  };
+
+  // Aplicar estilos a todas las celdas
+  const range = XLSX.utils.decode_range(ws['!ref']);
+  for (let R = range.s.r; R <= range.e.r; ++R) {
+    for (let C = range.s.c; C <= range.e.c; ++C) {
+      const cell_address = XLSX.utils.encode_cell({ r: R, c: C });
+      if (!ws[cell_address]) continue;
+      ws[cell_address].s = (R === 0) ? headerStyle : cellStyle;
+    }
+  }
+
+  // Ajustar ancho automático de columnas
+  const colWidths = headers.map((h, i) => {
+    let maxLen = h.length;
+    for (let R = 1; R < ws_data.length; R++) {
+      const val = ws_data[R][i] ? ws_data[R][i].toString() : "";
+      maxLen = Math.max(maxLen, val.length);
+    }
+    return { wch: Math.min(maxLen + 2, 40) };
+  });
+  ws['!cols'] = colWidths;
+
+  // Agregar hoja al libro
+  XLSX.utils.book_append_sheet(wb, ws, "Hoja de Ruta");
+
+  // Descargar Excel
+  XLSX.writeFile(wb, "Hoja_de_Ruta_Fresadora.xlsx");
+}
 // ----- Cargar XLSX (SheetJS) -----
 function cargarExcel(file){
   const reader = new FileReader();
@@ -281,3 +333,4 @@ document.addEventListener("DOMContentLoaded", ()=>{
   // initial recalc
   recalcularPreview();
 });
+
